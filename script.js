@@ -18,6 +18,9 @@ function clickCoffee(data) {
 
   // pass updated coffee value to updateCoffeeView
   updateCoffeeView(data.coffee);
+
+  // pass updated data obj to renderProducers
+  renderProducers(data);
 }
 
 /**************
@@ -46,7 +49,18 @@ function getUnlockedProducers(data) {
 }
 
 function makeDisplayNameFromId(id) {
-  // your code here
+  // split id using underscore as delimiter
+  let words = id.split("_");
+
+  // for each 'word' in 'words',
+  words.forEach((word, idx) => {
+    // capitalize first letter of current word
+    // and update current element of 'words' arr
+    words[idx] = `${word[0].toUpperCase()}${word.slice(1)}`;
+  });
+
+  // join 'words' back, separated by space
+  return words.join(" ");
 }
 
 // You shouldn't need to edit this function-- its tests should pass once you've written makeDisplayNameFromId
@@ -71,11 +85,44 @@ function makeProducerDiv(producer) {
 }
 
 function deleteAllChildNodes(parent) {
-  // your code here
+  // store firstChild of 'parent'
+  const child = parent.firstChild;
+
+  // if child is null,
+  if (child === null) {
+    // return 0
+    return 0;
+  }
+  // otherwise,
+  else {
+    // remove 'child'
+    parent.removeChild(child);
+
+    // call this function recursively
+    deleteAllChildNodes(parent);
+  }
 }
 
 function renderProducers(data) {
-  // your code here
+  // store 'producer_container' id element
+  const container = document.getElementById("producer_container");
+
+  // remove existing children of the 'container'
+  deleteAllChildNodes(container);
+
+  // unlock the producers which qualify
+  unlockProducers(data.producers, data.coffee);
+
+  // store unlocked producers
+  const unlockedProducers = getUnlockedProducers(data);
+
+  // for each 'producer' in 'unlockedProducers' arr,
+  unlockedProducers.forEach((producer) => {
+    // make a producer div for current 'producer'
+    const currentProducerDiv = makeProducerDiv(producer);
+    // append the div to the 'container'
+    container.appendChild(currentProducerDiv);
+  });
 }
 
 /**************
