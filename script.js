@@ -253,8 +253,38 @@ if (typeof process === "undefined") {
     buyButtonClick(event, data);
   });
 
+  // create functionality to update the player as they progress through the game
+  function updateGameStatus(data) {
+    // store total number of unlocked producers
+    const allUnlockedProducers = getUnlockedProducers(data);
+
+    // store 'directions' element
+    const directions = document.getElementById("directions");
+
+    // store minimum upgrade price
+    const allPrices = data.producers.map((producer) => {
+      return producer.price;
+    });
+    const cheapestUpgrade = Math.min(...allPrices);
+
+    // change the text of 'directions' depending on number of upgrades,
+    if (allUnlockedProducers.length === 5) {
+      // if all producers are unlocked:
+      directions.innerText = "So much coffee!!!";
+    } else if (allUnlockedProducers.length && data.coffee >= cheapestUpgrade) {
+      // if producers are available and the user can afford at least one:
+      directions.innerText = "Click to buy an upgrade! →";
+    } else {
+      // otherwise, display default text:
+      directions.innerText = "↑  Click on the coffee! ↑";
+    }
+  }
+
   // Call the tick function passing in the data object once per second
   setInterval(() => tick(data), 1000);
+
+  // Call updateGameStatus periodically to simulate real-time updates
+  setInterval(() => updateGameStatus(data), 1000);
 }
 // Meanwhile, if we aren't in a browser and are instead in node
 // we'll need to exports the code written here so we can import and
