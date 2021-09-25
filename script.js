@@ -204,16 +204,23 @@ function buyButtonClick(event, data) {
       // otherwise, if the purchase was successful:
       // render producers
       renderProducers(data);
-      // update coffee count displayed
+      // update coffee count displayed on screen
       updateCoffeeView(data.coffee);
-      // update total CPS displayed
+      // update total CPS displayed on screen
       updateCPSView(data.totalCPS);
     }
   }
 }
 
 function tick(data) {
-  // your code here
+  // increase coffee count
+  data.coffee += data.totalCPS;
+
+  // update coffee count displayed on screen
+  updateCoffeeView(data.coffee);
+
+  // update producers displayed on screen
+  renderProducers(data);
 }
 
 /*************************
