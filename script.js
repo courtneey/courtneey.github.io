@@ -130,27 +130,86 @@ function renderProducers(data) {
  **************/
 
 function getProducerById(data, producerId) {
-  // your code here
+  const allProducers = data.producers;
+  // loop through 'allProducers' arr of objs
+  for (let i = 0; i < allProducers.length; i++) {
+    // if current obj has a matching id, return it
+    if (allProducers[i].id === producerId) {
+      return allProducers[i];
+    }
+  }
 }
 
 function canAffordProducer(data, producerId) {
-  // your code here
+  // get producer obj by calling getProducerById
+  const producerData = getProducerById(data, producerId);
+
+  // if 'producerData' has a 'price' value <= user's coffee value, return true
+  if (producerData.price <= data.coffee) {
+    return true;
+  }
+  return false;
 }
 
 function updateCPSView(cps) {
-  // your code here
+  // store cps element
+  const cpsView = document.getElementById("cps");
+
+  // change text of 'cpsView' to value of 'cps'
+  cpsView.innerText = cps;
 }
 
 function updatePrice(oldPrice) {
-  // your code here
+  // return newly inflated price
+  return Math.floor(oldPrice * 1.25);
 }
 
 function attemptToBuyProducer(data, producerId) {
-  // your code here
+  // store producer obj
+  const producerData = getProducerById(data, producerId);
+
+  // determine if user can afford producer
+  const canAfford = canAffordProducer(data, producerId);
+
+  if (canAfford) {
+    // increment qty of producer
+    producerData.qty++;
+    // decrement user's coffee value
+    data.coffee -= producerData.price;
+    // update price of producer
+    producerData.price = updatePrice(producerData.price);
+    // update total cps
+    data.totalCPS += producerData.cps;
+  }
+
+  return canAfford;
 }
 
 function buyButtonClick(event, data) {
-  // your code here
+  // determine if click event was triggered by a button
+  const buttonWasClicked = event.target.tagName === "BUTTON";
+
+  if (buttonWasClicked) {
+    // store event id, removing 'buy_' prefix
+    const producerId = event.target.id.slice(4);
+
+    // store result of attempting to buy producer
+    const successfulPurchase = attemptToBuyProducer(data, producerId);
+
+    // if the purchase was unsuccessful,
+    if (successfulPurchase === false) {
+      // display alert box
+      window.alert("Not enough coffee!");
+    } else {
+      // otherwise, if the purchase was successful:
+      // render producers
+      renderProducers(data);
+      // update coffee count displayed
+      updateCoffeeView(data.coffee);
+      // update total CPS displayed
+      updateCPSView(data.totalCPS);
+    }
+  }
 }
 
 function tick(data) {
