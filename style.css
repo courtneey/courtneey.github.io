@@ -121,3 +121,7 @@ body {
   font-weight: bold;
   color: #84a59d;
 }
+
+.sell-btn {
+  justify-content: flex-end;
+}

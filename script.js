@@ -69,7 +69,7 @@ function makeProducerDiv(producer) {
   containerDiv.className = "producer";
   const displayName = makeDisplayNameFromId(producer.id);
   const currentCost = producer.price;
-  const html = `
+  let html = `
   <div class="producer-column">
     <div class="producer-title">${displayName}</div>
     <button type="button" id="buy_${producer.id}">Buy</button>
@@ -119,7 +119,11 @@ function renderProducers(data) {
   // for each 'producer' in 'unlockedProducers' arr,
   unlockedProducers.forEach((producer) => {
     // make a producer div for current 'producer'
-    const currentProducerDiv = makeProducerDiv(producer);
+    let currentProducerDiv = makeProducerDiv(producer);
+    // if current producer can be sold, add a sell button to the div
+    if (producer.qty > 0) {
+      currentProducerDiv = makeProducerDivWithSellButton(producer);
+    }
     // append the div to the 'container'
     container.appendChild(currentProducerDiv);
   });
@@ -186,8 +190,9 @@ function attemptToBuyProducer(data, producerId) {
 }
 
 function buyButtonClick(event, data) {
-  // determine if click event was triggered by a button
-  const buttonWasClicked = event.target.tagName === "BUTTON";
+  // determine if click event was triggered by a buy button
+  const buttonWasClicked =
+    event.target.tagName === "BUTTON" && event.target.id.slice(0, 3) === "buy";
 
   if (buttonWasClicked) {
     // store event id, removing 'buy_' prefix
@@ -223,6 +228,67 @@ function tick(data) {
   renderProducers(data);
 }
 
+function makeProducerDivWithSellButton(producer) {
+  const containerDiv = document.createElement("div");
+  containerDiv.className = "producer";
+  const displayName = makeDisplayNameFromId(producer.id);
+  const currentCost = producer.price;
+  const html = `
+  <div class="producer-column">
+    <div class="producer-title">${displayName}</div>
+    <button type="button" id="buy_${producer.id}">Buy</button>
+  </div>
+  <div class="producer-column sell-btn">
+    <button type="button" id="sell_${producer.id}">Sell</button>
+  </div>
+  <div class="producer-column">
+    <div>Quantity: ${producer.qty}</div>
+    <div>Coffee/second: ${producer.cps}</div>
+    <div>Cost: ${currentCost} coffee</div>
+  </div>
+  `;
+  containerDiv.innerHTML = html;
+  return containerDiv;
+}
+
+function attemptToSellProducer(data, producerId) {
+  // store producer obj
+  const producerData = getProducerById(data, producerId);
+
+  // determine if this producer can be sold
+  const canSell = producerData.qty > 0;
+
+  if (canSell) {
+    // decrement this producer's qty value
+    producerData.qty--;
+    // increase user's coffee by half of this producer's price
+    data.coffee += Math.floor(producerData.price * 0.5);
+    // decrease user's totalCPS by this producer's cps value
+    data.totalCPS -= producerData.cps;
+  }
+}
+
+function sellButtonClick(event, data) {
+  // determine if sell button was clicked
+  const sellButtonWasClicked =
+    event.target.tagName === "BUTTON" && event.target.id.slice(0, 4) === "sell";
+
+  if (sellButtonWasClicked) {
+    // store event id, removing 'sell_' prefix
+    const producerId = event.target.id.slice(5);
+
+    // sell the producer and update its data
+    attemptToSellProducer(data, producerId);
+
+    // render producers
+    renderProducers(data);
+    // update coffee count displayed on screen
+    updateCoffeeView(data.coffee);
+    // update total CPS displayed on screen
+    updateCPSView(data.totalCPS);
+  }
+}
+
 /*************************
  *  Start your engines!
  *************************/
@@ -251,6 +317,7 @@ if (typeof process === "undefined") {
   const producerContainer = document.getElementById("producer_container");
   producerContainer.addEventListener("click", (event) => {
     buyButtonClick(event, data);
+    sellButtonClick(event, data);
   });
 
   // create functionality to update the player as they progress through the game
