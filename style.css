@@ -1,8 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Calistoga&display=swap");
+
 * {
   box-sizing: border-box;
 }
 body {
   margin: 0px;
+  margin-right: 20px;
+  background-color: #f7ede2;
 }
 .column-container {
   display: flex;
@@ -33,10 +37,14 @@ body {
 }
 
 .column-header {
-  font-size: 25px;
+  font-family: "Calistoga";
+  font-size: 30px;
   position: relative;
   background-color: white;
   top: 8px;
+  color: #f28482;
+  padding: 0 10px 0 10px;
+  border-radius: 15px;
 }
 #big_coffee {
   user-select: none;
@@ -45,8 +53,13 @@ body {
 }
 
 .counter-container {
-  font-size: 30px;
+  font-family: "Calistoga";
+  font-size: 40px;
   margin: 10px;
+  color: #f28482;
+  background-color: white;
+  padding: 0 10px 0 10px;
+  border-radius: 15px;
 }
 
 .cps-container {
@@ -56,17 +69,19 @@ body {
 #producer_container {
   padding: 10px;
   overflow: auto;
-  border: 2px black solid;
+  border: 2px #7d542f solid;
   border-radius: 5px;
+  background-color: #f5cac3;
 }
 
 .producer {
   margin-bottom: 5px;
   padding: 10px;
-  border: 2px solid grey;
+  border: 2px #7d542f solid;
   border-radius: 4px;
   display: flex;
   justify-content: space-between;
+  background-color: white;
 }
 .producer-column {
   display: flex;
@@ -80,5 +95,29 @@ body {
 
 .producer button {
   font-size: 15px;
+  color: white;
   width: 50px;
+  background-color: #84a59d;
+  border: 0px;
+  border-radius: 4px;
+}
+#directions {
+  font-size: 30px;
+  font-weight: bold;
+  color: #f28482;
+  padding: 0 10px 0 10px;
+  background-color: white;
+  border-radius: 15px;
+}
+
+#author {
+  margin-top: 10px;
+  font-size: 12px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#author a {
+  text-decoration: none;
+  font-weight: bold;
+  color: #84a59d;
 }
