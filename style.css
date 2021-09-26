@@ -91,6 +91,7 @@ body {
 
 .producer-title {
   font-size: 20px;
+  width: 150px;
 }
 
 .producer button {
@@ -124,4 +125,13 @@ body {
 
 .sell-btn {
   justify-content: flex-end;
+}
+
+#restart {
+  margin-top: 20px;
+  font-size: 15px;
+  color: white;
+  background-color: #84a59d;
+  border: 0px;
+  border-radius: 4px;
 }

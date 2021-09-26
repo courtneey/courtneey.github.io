@@ -306,7 +306,20 @@ function sellButtonClick(event, data) {
 if (typeof process === "undefined") {
   // Get starting data from the window object
   // (This comes from data.js)
-  const data = window.data;
+  let data = window.data;
+
+  // attempt to load saved data
+  let savedData = localStorage.getItem("data");
+
+  if (savedData) {
+    // if saved data exists, reassign 'data'
+    data = JSON.parse(savedData);
+  }
+
+  // update coffee count displayed on screen
+  updateCoffeeView(data.coffee);
+  // update total CPS displayed on screen
+  updateCPSView(data.totalCPS);
 
   // Add an event listener to the giant coffee emoji
   const bigCoffee = document.getElementById("big_coffee");
@@ -335,7 +348,7 @@ if (typeof process === "undefined") {
     const cheapestUpgrade = Math.min(...allPrices);
 
     // change the text of 'directions' depending on number of upgrades,
-    if (allUnlockedProducers.length === 5) {
+    if (allUnlockedProducers.length === 12) {
       // if all producers are unlocked:
       directions.innerText = "So much coffee!!!";
     } else if (allUnlockedProducers.length && data.coffee >= cheapestUpgrade) {
@@ -347,11 +360,29 @@ if (typeof process === "undefined") {
     }
   }
 
+  // add an event listener to 'restart game' button
+  const restartButton = document.getElementById("restart");
+  restartButton.addEventListener("click", () => {
+    window.localStorage.clear();
+    data = window.data;
+    // update coffee count displayed on screen
+    updateCoffeeView(data.coffee);
+    // update total CPS displayed on screen
+    updateCPSView(data.totalCPS);
+    // reload the page
+    location.reload();
+  });
+
   // Call the tick function passing in the data object once per second
   setInterval(() => tick(data), 1000);
 
   // Call updateGameStatus periodically to simulate real-time updates
   setInterval(() => updateGameStatus(data), 1000);
+
+  // Save the game once per second
+  setInterval(() => {
+    window.localStorage.setItem("data", JSON.stringify(data));
+  }, 1000);
 }
 // Meanwhile, if we aren't in a browser and are instead in node
 // we'll need to exports the code written here so we can import and
